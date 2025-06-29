@@ -4,14 +4,10 @@ import driver from '../config/neo4j';
 export async function getShortestPath(center: string, zona: string) {
   const session = driver.session();
   try {
-    const res = await session.run(
-      `
-      MATCH (start:CentroDistribucion {nombre: $center}), (end:Zona {nombre: $zona})
-      CALL algo.shortestPath.stream(start, end, "tiempo_minutos") YIELD nodeId, cost
-      RETURN nodeId, cost
-      `,
-      { center, zona }
-    );
+    const res = await session.run(`  
+      MATCH p=shortestPath((start:CentroDistribucion {nombre:$center})-[*..15]->(end:Zona {nombre:$zona}))  
+      RETURN p, reduce(s=0, r in relationships(p) | s + r.tiempo_minutos) AS total_time`,
+      { center, zona });
     // Si no tienes APOC/algorithms, usa el built-in:
     // MATCH p=shortestPath((start:CentroDistribucion {nombre:$center})-[*..15]->(end:Zona {nombre:$zona}))
     // RETURN p, reduce(s=0, r in relationships(p) | s + r.tiempo_minutos) AS total_time

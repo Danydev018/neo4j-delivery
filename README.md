@@ -18,11 +18,11 @@ El grafo incluye:
 ## 🛠️ Instalación  
   
 ```bash  
-# Instalar dependencias  [2](#header-2)
+# Instalar dependencias  
 npm install  
   
-# Configurar Neo4j (localhost:7687)  [3](#header-3)
-# Inicializar base de datos  [4](#header-4)
+# Configurar Neo4j (localhost:7687) 
+# Inicializar base de datos  
 POST /api/graph/migrate-and-seed
 ```
 📡 API Endpoints
@@ -40,11 +40,3 @@ Modificaciones
     POST /api/modify/add-zone - Agregar nueva zona
     POST /api/modify/update-street-time - Actualizar tiempo de tránsito
 
-🧪 Testing
-# Ejecutar pruebas  [5](#header-5)
-npm test  
-  
-# Las pruebas cubren:  [6](#header-6)
-# - Inicialización de base de datos  [7](#header-7)
-# - Operaciones de consulta  [8](#header-8)
-# - Modificaciones de grafo  [9](#header-9)

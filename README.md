@@ -9,14 +9,6 @@ Sistema de gestión y optimización de rutas de entrega utilizando Neo4j como ba
 - **API REST**: Endpoints completos para todas las operaciones  
 - **Testing Integrado**: Suite de pruebas con SuperTest y Jest
 
-## 🏗️ Arquitectura  
-  
-El sistema está organizado en capas:
-├── Controllers/ # Manejo de requests HTTP
-├── Services/ # Lógica de negocio y consultas Neo4j
-├── Routes/ # Definición de endpoints
-└── Tests/ # Pruebas de integración
-
 ## 📊 Modelo de Datos  
   
 El grafo incluye:  

@@ -79,10 +79,10 @@ export async function getZonasNoAccesibles() {
   try {
     const res = await session.run(
       `
-      MATCH (z:Zona)
-      WHERE NOT (EXISTS {
-        MATCH (c:CentroDistribucion), p=shortestPath((c)-[:CONECTA*..15]->(z)) RETURN p
-      })
+      MATCH (z:Zona)  
+      WHERE NOT (EXISTS {  
+        MATCH (c:CentroDistribucion), p=shortestPath((c)-[:CONECTA*..5]->(z)) RETURN p // Cambiar *..15 a *..5  
+      })  
       RETURN z.nombre AS zona
       `
     );
@@ -93,26 +93,31 @@ export async function getZonasNoAccesibles() {
 }
 
 // 6. Zonas aisladas si se elimina una zona o relación
-export async function getZonasAisladasSiCierra(nombreZona: string) {
-  const session = driver.session();
-  try {
-    // Simula cierre removiendo temporalmente la zona del match
-    const res = await session.run(
-      `
-      MATCH (z:Zona)
-      WHERE z.nombre <> $nombreZona
-        AND NOT (EXISTS {
-          MATCH (c:CentroDistribucion),
-          p=shortestPath((c)-[:CONECTA*..15]->(z))
-          WHERE NONE(n IN nodes(p) WHERE n.nombre = $nombreZona)
-          RETURN p
-        })
-      RETURN z.nombre AS zona
-      `,
-      { nombreZona }
-    );
-    return res.records;
-  } finally {
-    await session.close();
-  }
+export async function getZonasAisladasSiCierra(nombreZona: string) {  
+  const session = driver.session();  
+  try {  
+    const res = await session.run(  
+      `  
+      // Primero, verifica si la zona a simular existe  
+      MATCH (zonaCierre:Zona {nombre: $nombreZona})  
+      WITH zonaCierre  
+  
+      // Ahora, encuentra zonas que se aislarían si zonaCierre fuera "cerrada"  
+      MATCH (z:Zona)  
+      WHERE z.nombre <> $nombreZona // Excluye la zona que estamos simulando cerrar  
+        AND NOT (EXISTS {  
+          MATCH (c:CentroDistribucion),  
+          p=shortestPath((c)-[:CONECTA*..15]->(z))  
+          // Asegúrate de que el camino no pase por la zona que estamos simulando cerrar  
+          WHERE NONE(n IN nodes(p) WHERE n.nombre = $nombreZona)  
+          RETURN p  
+        })  
+      RETURN z.nombre AS zona  
+      `,  
+      { nombreZona }  
+    );  
+    return res.records;  
+  } finally {  
+    await session.close();  
+  }  
 }

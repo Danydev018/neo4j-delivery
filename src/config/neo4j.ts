@@ -11,4 +11,6 @@ const driver = neo4j.driver(
   neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)
 );
 
+
+
 export default driver;

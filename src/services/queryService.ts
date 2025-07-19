@@ -46,7 +46,7 @@ export async function getZonasAccesibles(center: string, maxTiempo: number) {
       `
       MATCH (c:CentroDistribucion {nombre: $center})- [r:CONECTA]-> (z:Zona)
       WHERE r.tiempo_minutos < $maxTiempo
-      RETURN z.nombre AS zona, r.tiempo_minutos
+      RETURN z.nombre AS zona, r.tiempo_minutos, z.tipo_zona AS tipo, r.trafico_actual AS trafico
       `,
       { center, maxTiempo }
     );

@@ -4,6 +4,17 @@ import driver from '../config/neo4j';
 export async function closeStreet(origen: string, destino: string) {
   const session = driver.session();
   try {
+    // Verificar si la relación existe
+    const result = await session.run(
+      `
+      MATCH (a {nombre: $origen})-[r:CONECTA]->(b {nombre: $destino})
+      RETURN r
+      `,
+      { origen, destino }
+    );
+    if (result.records.length === 0) {
+      return { success: false, message: `La calle de ${origen} a ${destino} no existe.` };
+    }
     // Marca la relación como cerrada
     await session.run(
       `
@@ -23,6 +34,17 @@ export async function closeStreet(origen: string, destino: string) {
 export async function openStreet(origen: string, destino: string) {
   const session = driver.session();
   try {
+    // Verificar si la relación existe
+    const result = await session.run(
+      `
+      MATCH (a {nombre: $origen})-[r:CONECTA]->(b {nombre: $destino})
+      RETURN r
+      `,
+      { origen, destino }
+    );
+    if (result.records.length === 0) {
+      return { success: false, message: `La calle de ${origen} a ${destino} no existe.` };
+    }
     await session.run(
       `
       MATCH (a {nombre: $origen})-[r:CONECTA]->(b {nombre: $destino})
